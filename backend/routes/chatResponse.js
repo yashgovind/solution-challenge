@@ -1,6 +1,7 @@
 // routes/chatRoutes.js
 const express = require("express");
 const router = express.Router();
+const Chat = require("../models/ChatModel");
 
 // Create chat message
 router.post('/chats', async (req, res) => {

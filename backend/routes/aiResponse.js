@@ -1,6 +1,7 @@
 // routes/aiResponseRoutes.js
 const express = require("express");
 const router = express.Router();
+const aiResponse = require("../models/AIResponseSchema");
 
 // Generate AI response
 router.post('/ai-responses', async (req, res) => {
