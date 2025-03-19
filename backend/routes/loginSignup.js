@@ -33,7 +33,7 @@ router.get("/api/logout", (req, res) => {
 
 // default route
 router.get("/api", (req, res) => {
-  res.render("loginPage");
+  // send to frontend.
 });
 
 module.exports = router;

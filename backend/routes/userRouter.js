@@ -2,6 +2,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const router = express.Router();
+const User = require("../models/userModel");
 
 // Get users filtered by subjects with aggregation pipeline
 router.get('/users/by-subjects', async (req, res) => {
