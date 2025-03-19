@@ -10,8 +10,8 @@ const DB_NAME = 'solution challenge';
 const session = require("express-session");
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const userRoutes = require('./routes/userRouter');
-const aiResponseRoutes = require('./routes/aiResponse');
+const userRoutes = require("./routes/userRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 const authRoute = require("./middleware/auth");
 const contentResponse = require("./")
 
@@ -40,7 +40,8 @@ const authRoute = require("./routes/loginSignup");
 // auth router.
 
 app.use("/api", authRoute);
-app.use('/api', userRoutes);
+app.use("/api", userRoutes);
+app.use("/api", chatRoutes);
 app.use('/api', aiResponseRoutes);
 app.use('/api', contentResponse);
 app.use('/api', googleProxyRoutes);

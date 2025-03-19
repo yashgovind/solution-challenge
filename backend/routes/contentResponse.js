@@ -1,21 +1,65 @@
-// routes/contentRoutes.js
 const express = require("express");
 const router = express.Router();
-const Topic = require("../models/topicModel");
+const Subject = require("../models/subjectModel");
 
-// get topics by subject. --> find subject by their id.
-
-// Get topics by subject
-router.get('/subjects/:subjectId/topics', async (req, res) => {
+// Create a new subject
+router.post("/subjects", async (req, res) => {
   try {
-    const topics = await Topic.find({ subject: req.params.subjectId })
-      .populate('learningMaterials')
-      .sort({ order: 1 });
-
-    res.json(topics);
+    const { name, topics } = req.body;
+    const newSubject = new Subject({ name, topics });
+    await newSubject.save();
+    res.status(201).json(newSubject);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-export default router;
+// Get all subjects
+router.get("/subjects", async (req, res) => {
+  try {
+    const subjects = await Subject.find().populate("topics");
+    res.json(subjects);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get a single subject by ID
+router.get("/subjects/:id", async (req, res) => {
+  try {
+    const subject = await Subject.findById(req.params.id).populate("topics");
+    if (!subject) return res.status(404).json({ error: "Subject not found" });
+    res.json(subject);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update a subject
+router.put("/subjects/:id", async (req, res) => {
+  try {
+    const { name, topics } = req.body;
+    const updatedSubject = await Subject.findByIdAndUpdate(
+      req.params.id,
+      { name, topics },
+      { new: true }
+    );
+    if (!updatedSubject) return res.status(404).json({ error: "Subject not found" });
+    res.json(updatedSubject);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete a subject
+router.delete("/subjects/:id", async (req, res) => {
+  try {
+    const deletedSubject = await Subject.findByIdAndDelete(req.params.id);
+    if (!deletedSubject) return res.status(404).json({ error: "Subject not found" });
+    res.json({ message: "Subject deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+module.exports = router;

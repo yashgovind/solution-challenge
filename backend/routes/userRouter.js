@@ -1,49 +1,62 @@
-// routes/userRoutes.js
 const express = require("express");
-const mongoose = require("mongoose");
 const router = express.Router();
 const User = require("../models/userModel");
 
-// Get users filtered by subjects with aggregation pipeline
-router.get('/users/by-subjects', async (req, res) => {
+// Create a new user
+router.post("/users", async (req, res) => {
   try {
-    const { subjectIds, sortBy = 'name' } = req.query;
+    const { fullname, email, password, isAdmin, googleId, geminiId, subjects, topics, avatar, ttsVoice, avatarMood } = req.body;
+    const newUser = new User({
+      fullname,
+      email,
+      password,
+      isAdmin,
+      googleId,
+      geminiId,
+      subjects,
+      topics,
+      avatar,
+      ttsVoice,
+      avatarMood,
+    });
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-    const pipeline = [
-      {
-        $lookup: {
-          from: 'subjects',
-          localField: 'enrolledSubjects',
-          foreignField: '_id',
-          as: 'enrolledSubjectsData'
-        }
-      },
-      {
-        $match: {
-          'enrolledSubjectsData._id': {
-            $in: subjectIds.split(',').map(id => new mongoose.Types.ObjectId(id))
-          }
-        }
-      },
-      {
-        $sort: { [sortBy]: 1 }
-      },
-      {
-        $project: {
-          name: 1,
-          email: 1,
-          avatar: 1,
-          enrolledSubjects: 1,
-          createdAt: 1
-        }
-      }
-    ];
+// Delete a user
+router.delete("/users/:id", async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) return res.status(404).json({ error: "User not found" });
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-    const users = await User.aggregate(pipeline);
+// Update a user
+router.put("/users/:id", async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedUser) return res.status(404).json({ error: "User not found" });
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get all users sorted by name, subjects, or topics
+router.get("/users", async (req, res) => {
+  try {
+    const { sortBy = "fullname" } = req.query;
+    const users = await User.find().populate("subjects topics").sort({ [sortBy]: 1 });
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-export default router;
+module.exports = router;
