@@ -7,4 +7,4 @@ const SubjectSchema = new mongoose.Schema({
 
 const Subject = mongoose.model("Subject", SubjectSchema);
 
-module.exports = Subject;
+module.exports = Subject; 

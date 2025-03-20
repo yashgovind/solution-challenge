@@ -17,7 +17,7 @@ router.post("/subjects", async (req, res) => {
 // Get all subjects
 router.get("/subjects", async (req, res) => {
   try {
-    const subjects = await Subject.find().populate("topics");
+    const subjects = await Subject.find().populate("topics").sort({$gt:0});
     res.json(subjects);
   } catch (error) {
     res.status(500).json({ error: error.message });

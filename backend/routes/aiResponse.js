@@ -15,33 +15,11 @@ router.post("/chats", async (req, res) => {
       topic: topicId,
     });
     await userMessage.save();
-
-    // Call AI model for response
-    const aiResponse = await axios.post(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        model: "gpt-4",
-        messages: [{ role: "user", content: message }],
-      },
-      {
-        headers: { Authorization: `Bearer ${process.env.OPENAI_KEY}` },
-      }
-    );
-
-    const aiMessage = aiResponse.data.choices[0].message.content;
-
-    // Save AI response
-    const aiChat = new Chat({
-      messages: [{ sender: "ai", text: aiMessage }],
-      user: userId,
-      topic: topicId,
-    });
-    await aiChat.save();
-
-    res.status(201).json({ userMessage, aiMessage });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
   }
+   catch (error) {
+    console.log(error.message);
+    res.status(500).json({ error: error.message });
+   }
 });
 
 // Get chat history for a topic
@@ -54,6 +32,7 @@ router.get("/chats/topic/:topicId", async (req, res) => {
 
     res.json(chats);
   } catch (error) {
+    console.log(error.message);
     res.status(500).json({ error: error.message });
   }
 });

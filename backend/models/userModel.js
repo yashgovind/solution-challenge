@@ -6,7 +6,6 @@ const userSchema = new Schema({
     password: { type: String, minLength: 6, maxLength: 20, trim: true },
     isAdmin: { type: Boolean, default: false },
     googleId: { type: String },
-    geminiId: { type: String },
     subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subject" }],
     topics: [{ type: mongoose.Schema.Types.ObjectId, ref: "Topic" }],
     avatar: String,          // Ready Player Me GLB URL
