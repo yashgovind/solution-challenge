@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.particles {
+    background: radial-gradient(circle at center, transparent 0%, #1A1B4B 70%);
+    mix-blend-mode: screen;
+    animation: pulse 4s ease-in-out infinite;
+}
+
+.geometric-shapes::before,
+.geometric-shapes::after {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    background: linear-gradient(45deg, #7B2CBF 0%, #00FFD1 100%);
+    animation: float 6s ease-in-out infinite;
+    opacity: 0.1;
+}
+
+.geometric-shapes::before {
+    top: -100px;
+    right: -100px;
+}
+
+.geometric-shapes::after {
+    bottom: -100px;
+    left: -100px;
+    animation-delay: -3s;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.2;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
